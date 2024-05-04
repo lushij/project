@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件上传</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #uploadForm {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        #fileDrop {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            position: relative;
+        }
+
+        #fileInfo {
+            margin-top: 10px;
+            color: #777;
+            font-style: italic;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #message {
+            margin-top: 10px;
+            color: #333;
+            display: none;
+        }
+
+        .dragover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <h2>上传文件</h2>
+        <div id="fileDrop">
+            <p>拖拽文件到此处或点击选择文件</p>
+            <input type="file" name="file" id="file">
+            <input type="button" id="selectButton" value="选择文件">
+            <div id="fileInfo"></div>
+        </div>
+        <br>
+        <input type="submit" value="上传文件">
+        <div id="message">文件上传成功</div>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('uploadForm');
+            var fileInput = document.getElementById('file');
+            var fileDrop = document.getElementById('fileDrop');
+            var selectButton = document.getElementById('selectButton');
+            var fileInfoDiv = document.getElementById('fileInfo');
+            var messageDiv = document.getElementById('message');
+
+            selectButton.addEventListener('click', function() {
+                fileInput.click();
+            });
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                uploadFiles(fileInput.files);
+            });
+
+            fileInput.addEventListener('change', function(event) {
+                displayFileInfo();
+                hideSelectButton();
+            });
+
+            fileDrop.addEventListener('dragover', function(event) {
+                event.preventDefault();
+                fileDrop.classList.add('dragover');
+            });
+
+            fileDrop.addEventListener('dragleave', function(event) {
+                event.preventDefault();
+                fileDrop.classList.remove('dragover');
+            });
+
+            fileDrop.addEventListener('drop', function(event) {
+                event.preventDefault();
+                fileDrop.classList.remove('dragover');
+                fileInput.files = event.dataTransfer.files;
+                displayFileInfo();
+                hideSelectButton();
+            });
+
+            function displayFileInfo() {
+                if (fileInput.files.length > 0) {
+                    var file = fileInput.files[0];
+                    var fileName = file.name;
+                    var fileSize = formatFileSize(file.size);
+                    fileInfoDiv.textContent = '文件名: ' + fileName + ' | 文件大小: ' + fileSize;
+                }
+            }
+
+            function formatFileSize(size) {
+                if (size === 0) return '0 Bytes';
+                var units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+                var i = Math.floor(Math.log(size) / Math.log(1024));
+                return parseFloat((size / Math.pow(1024, i)).toFixed(2)) + ' ' + units[i];
+            }
+
+            function uploadFiles(files) {
+                if (files.length === 0) {
+                    messageDiv.textContent = '请选择要上传的文件';
+                    return;
+                }
+
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'http://139.196.122.57:1236/file/upload', true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        messageDiv.style.display = 'block';
+                        setTimeout(function() {
+                            messageDiv.style.display = 'none';
+                        }, 1000); // 1秒后隐藏
+                    } else {
+                        messageDiv.textContent = '文件上传失败';
+                    }
+                };
+                xhr.onerror = function() {
+                    messageDiv.textContent = '请求出错';
+                };
+                xhr.send(formData);
+            }
+
+            function hideSelectButton() {
+                selectButton.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
+
