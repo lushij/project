@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drag and Drop File Upload</title>
+<style>
+    #dropArea {
+        width: 300px;
+        height: 200px;
+        border: 2px dashed #ccc;
+        border-radius: 5px;
+        text-align: center;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: #333;
+        margin: 20px auto;
+        position: relative;
+    }
+
+    #fileInfo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.7);
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .btn-container {
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        display: flex;
+        justify-content: center; /* 将按钮容器居中显示 */
+    }
+
+    #uploadBtn,
+    #chooseBtn {
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    #uploadBtn:hover,
+    #chooseBtn:hover {
+        background-color: #0056b3;
+    }
+
+    #fileInput {
+        display: none;
+    }
+</style>
+</head>
+<body>
+<div id="dropArea">
+    Drop files here
+    <div id="fileInfo"></div>
+    <div class="btn-container">
+        <button id="chooseBtn">Choose Files</button>
+        <button id="uploadBtn" onclick='onUpload'>Upload</button>
+    </div>
+</div>
+<input type="file" id="fileInput" multiple>
+
+<script>
+    var dropArea = document.getElementById('dropArea');
+    var fileInfo = document.getElementById('fileInfo');
+    var uploadBtn = document.getElementById('uploadBtn');
+    var chooseBtn = document.getElementById('chooseBtn');
+    var fileInput = document.getElementById('fileInput');
+
+    // 阻止浏览器默认事件
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false)
+    });
+
+    // 拖拽进入和悬停时改变背景颜色
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, highlight, false)
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, unhighlight, false)
+    });
+
+    // 处理拖拽文件
+    dropArea.addEventListener('drop', handleDrop, false);
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    function highlight() {
+        dropArea.classList.add('highlight');
+    }
+
+    function unhighlight() {
+        dropArea.classList.remove('highlight');
+    }
+
+    function handleDrop(e) {
+        var dt = e.dataTransfer;
+        var files = dt.files;
+
+        displayFileInfo(files);
+    }
+
+    function displayFileInfo(files) {
+        fileInfo.innerHTML = '';
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var fileSize = (file.size / 1024).toFixed(2) + ' KB';
+            fileInfo.innerHTML += '<div>' + file.name + ' (' + fileSize + ')</div>';
+        }
+        fileInfo.style.display = 'block';
+    }
+
+    uploadBtn.addEventListener('click', uploadFiles);
+
+   function uploadFiles() {
+    var files = fileInput.files;
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        uploadFile(file);
+    }
+}
+
+	function uploadFile(file) {
+    var formData = new FormData();
+    formData.append('file', file);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'http://139.196.122.57:1236/file/upload', true);
+
+    xhr.upload.onprogress = function(e) {
+        if (e.lengthComputable) {
+            var percentComplete = (e.loaded / e.total) * 100;
+            console.log('上传进度：' + percentComplete.toFixed(2) + '%');
+        }
+    };
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            console.log('上传成功！');
+        } else {
+            console.error('上传失败：' + xhr.statusText);
+        }
+    };
+
+    xhr.onerror = function() {
+        console.error('网络错误！');
+    };
+
+    xhr.send(formData);
+}
+
+
+
+    // 点击选择按钮触发文件选择
+    chooseBtn.addEventListener('click', function() {
+        fileInput.click();
+    });
+
+    // 监听文件选择事件，当选择文件时更新文件信息
+    fileInput.addEventListener('change', function() {
+        var files = fileInput.files;
+        displayFileInfo(files);
+    });
+</script>
+</body>
+</html>
+

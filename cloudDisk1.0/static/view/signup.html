@@ -1,0 +1,183 @@
+<html>
+
+<head>
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+  <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
+    integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+  <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <script lang="javascript">
+  </script>
+</head>
+<style>
+  .codeInput {
+    width: 150px !important;
+  }
+</style>
+
+<body>
+  <form>
+    <div style="width:500px;margin:10px auto;text-align: center;">
+      <div style="font-size:36px;font-weight:bold;margin:0px auto;">UserSignup</div>
+      <br />
+      <table style="width:100%;text-align: left;">
+        <tbody>
+          <tr style="margin-bottom: 20px;">
+            <td>
+              <span class="p">*</span>
+              <label for="username" class="l"> username:</label>
+            </td>
+            <td>
+              <input id="username" type="text" style="height:30px;width:250px;padding-right:50px;">
+            </td>
+          </tr>
+          <tr>
+            <td><br></td>
+            <td></td>
+          </tr>
+          <tr style="margin-bottom: 20px;">
+            <td>
+              <span class="p">*</span>
+              <label for="password" class="l"> password:</label>
+            </td>
+            <td>
+              <input id="password" type="text" style="height:30px;width:250px;padding-right:50px;">
+            </td>
+          </tr>
+          <tr>
+            <td><br></td>
+            <td></td>
+          </tr>
+          <tr style="margin-bottom: 20px;">
+            <td>
+              <span class="p">*</span>
+              <label for="phone" class="l"> phone:</label>
+            </td>
+            <td>
+              <input id="phone" type="text" style="height:30px;width:250px;padding-right:50px;">
+            </td>
+          </tr>
+          <tr>
+            <td><br></td>
+            <td></td>
+          </tr>
+          <tr style="margin-bottom: 20px;">
+            <td>
+              <span class="p">*</span>
+              <label for="Code" class="l"> code:</label>
+            </td>
+            <td>
+              <!-- 验证码 -->
+              <input id="code" type="text" style="height:30px;width:150px;padding-right:50px;">
+              <!-- 获取验证码点击按钮 -->
+              <input id="getCodeBtn" class="btn btn-success" type="button" style="margin:0 auto;width:90px;"
+                value="Get Code" onclick='getcode()' />
+              <label name='getcode' id='getcode' style='display:none'>get success!</label>
+              <span id="countdown"></span> <!-- 用于显示倒计时的秒数-->
+            </td>
+            </td> -->
+          </tr>
+
+          <tr>
+            <td><br></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>
+              <input class="btn btn-success" type="button" style="margin:0 auto;width:250px;" value="click to signup"
+                onclick='onSignup()' />
+              <label name='login_hint' id='login_hint' style='display:none'>sigup success!</label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+</body>
+
+<script lang="javascript">
+  function getcode() {
+    var btn = document.getElementById('getCodeBtn');
+    var label = document.getElementById('getcode');
+
+    // 数据传输
+    var phone = document.getElementById('phone');
+    $.ajax({
+      url: "/usr/getcode",
+      type: "POST",
+      data: {
+        "phone": phone.value,
+      }
+    });
+
+
+    // 修饰
+    label.style.display = 'inlineblock'; // 显示 "Get Success!"
+
+    var count = 60; // 设置倒计时初始值为 10 秒
+    var countdownSpan = document.getElementById('countdown');
+    countdownSpan.innerText = count; // 初始化显示倒计时
+
+    btn.disabled = true; // 禁用按钮
+
+    var timer = setInterval(function () {
+      count--; // 每秒减一
+      countdownSpan.innerText = count; // 更新显示的倒计时数值
+
+      if (count <= 0) {
+        clearInterval(timer); // 倒计时结束，清除计时器
+        label.style.display = 'none'; // 隐藏 "Get Success!"
+        countdownSpan.innerText = ''; // 清空倒计时显示
+        btn.disabled = false; // 重新启用按钮
+      }
+    }, 1000); // 每隔一秒执行一次
+  }
+  // 注册
+  function onSignup() {
+    var username = document.getElementById('username');
+    var password = document.getElementById('password');
+    var phone = document.getElementById('phone');
+    var phoneCode = document.getElementById('code');
+    $.ajax({
+      url: "/signup",
+      type: "POST",
+      data: {
+        "username": username.value,
+        "password": password.value,
+        "phone": phone.value,
+        "phoneCode": phoneCode.value
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        if (textStatus == "error") {
+          alert(textStatus + " : " + errorThrown);
+        } else {
+          alert(textStatus);
+        }
+      },
+      success: function (data, textStatus, jqXHR) {
+        if (data == 'SUCCESS') {
+          // 成功后跳到登录页
+          document.getElementById("login_hint").style.display = "block";
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 2000);
+
+        } else {
+          alert('signup fail!');
+        }
+      }
+    });
+  }
+</script>
+
+</html>
