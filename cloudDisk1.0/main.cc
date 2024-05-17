@@ -28,6 +28,7 @@ void sigHandler(int num)
 int main()
 {
     signal(SIGINT,sigHandler);
+    AlibabaCloud::InitializeSdk();
     AlibabaCloud::OSS::InitializeSdk();
     wfrest::HttpServer server;
     Config config;
@@ -164,7 +165,7 @@ int main()
                 std::string phone =from_kv["phone"] ;
                 string code = phoneCode().get_code();
                 sendPhoneMsg msgSender;
-#if 0//测试先不开启
+#if 1//测试先不开启
                 if (!msgSender.send(phone, code)) {
                     return -1;
                 }
@@ -243,14 +244,15 @@ int main()
         //1. 解析请求
         string filename = req->query("filename");
         string strfilesize = req->query("filesize");
+        string sha1= req->query("filesha1");
         cout << "filename:" << filename << endl;
         cout << "filesize:" << strfilesize << endl;
 
         //2. 重定向到另外一个下载服务器
-        /* resp->headers["Location"] = "http://139.196.122.57:8080/" + filename; */
-        /* resp->set_status_code("301"); */
+        resp->headers["Location"] = "http://139.196.122.57:1235/" + filename;
+        resp->set_status_code("301");
 
-#if 1
+#if 0
         //方案一:
         //2. 读取本地文件
         string filepath = "./tmp/" + filename;
@@ -288,6 +290,7 @@ int main()
         server.stop();
         // 调用 AlibabaCloud::OSS 命名空间下的 ShutdownSdk() 函数
         AlibabaCloud::OSS::ShutdownSdk();
+        AlibabaCloud::ShutdownSdk();
 
     }
     else

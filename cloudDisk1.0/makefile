@@ -1,8 +1,9 @@
 all:server consumer
 server:main.o
-	g++ $^ -o $@ -lSimpleAmqpClient -lwfrest -lworkflow -lssl -lcrypt -lcrypto -lalibabacloud-oss-cpp-sdk -lcurl -lpthread
+	g++ $^ -o $@ -lSimpleAmqpClient -lwfrest -lworkflow -lssl -lcrypt -lcrypto -lalibabacloud-oss-cpp-sdk -lcurl -lpthread -lalibabacloud-sdk-core
+
 main.o:main.cc
-	g++ -c $^ -g -o  $@  -std=c++11 -fno-rtti 
+	g++ -c $^ -g -o  $@  -std=c++11 -fno-rtti  -lalibabacloud-sdk-core
 consumer:consumer.o
 	g++ $^ -o $@ -std=c++11 -lSimpleAmqpClient -fno-rtti -lalibabacloud-oss-cpp-sdk -lcurl -lcrypto -lpthread
 clean:

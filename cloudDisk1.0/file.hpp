@@ -33,6 +33,7 @@ struct file_usr_info
     string _filepath;
     string _file_content;
     long long _filesize;
+    string filename;
     Config _config;
     file_usr_info(string username,string token,wfrest::HttpResp*resp,bool isGETupload)
         :_username(username)
@@ -161,6 +162,8 @@ public:
                  fprintf(stderr,"sqls = %s\n",sqls.select_tbl_file_sqls(sha1).c_str());
                  // fileInfo.first fileInfo.second
                  std::string filepath = "tmp/" + fileInfo.first;
+                 /* std::string filepath = "tmp/" + sha1; */
+                 this->setfile_name(fileInfo.first);
                  this->setFileInfo(filepath,fileInfo.second,fileInfo.second.size());
                  auto selectSha1 = WFTaskFactory::create_mysql_task(sqls.geturl(),0,[this](WFMySQLTask*mysqlTask){this->readMysql(mysqlTask);});
                  //设置属性
@@ -177,7 +180,7 @@ public:
         protocol::MySQLResultCursor cursor(resp);
         std::vector<std::vector<protocol::MySQLCell>> rows;
         cursor.fetch_all(rows);
-        fprintf(stderr,"%s\n%s\n",_fusr._filepath.c_str(),this->_fusr._file_content.c_str());
+        /* fprintf(stderr,"%s\n%s\n",_fusr._filepath.c_str(),this->_fusr._file_content.c_str()); */
         if(rows.size()==0)
         {
             //如果没有，插入数据库，保存文件
@@ -248,6 +251,10 @@ public:
     void setConfig(const Config &_config)
     {
         _fusr._config=_config;
+    }
+    void setfile_name(const string&filename)
+    {
+        _fusr.filename=filename;
     }
 private:
     file_usr_info _fusr;
