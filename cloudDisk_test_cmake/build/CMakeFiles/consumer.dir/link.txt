@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/consumer.dir/src/consumer.cc.o -o /home/lu/workFlowProject/cloudDisk_test_cmake/bin/consumer  -lSimpleAmqpClient -lalibabacloud-oss-cpp-sdk -lcurl -lcrypto -lpthread 

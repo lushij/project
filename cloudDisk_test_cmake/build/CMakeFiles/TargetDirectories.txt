@@ -1,0 +1,4 @@
+/home/lu/workFlowProject/cloudDisk_test_cmake/build/CMakeFiles/server.dir
+/home/lu/workFlowProject/cloudDisk_test_cmake/build/CMakeFiles/consumer.dir
+/home/lu/workFlowProject/cloudDisk_test_cmake/build/CMakeFiles/edit_cache.dir
+/home/lu/workFlowProject/cloudDisk_test_cmake/build/CMakeFiles/rebuild_cache.dir

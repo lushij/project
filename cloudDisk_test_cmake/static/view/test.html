@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件上传</title>
+</head>
+<body>
+    <h2>上传文件</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" id="file">
+        <input type="submit" value="上传文件">
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('uploadForm');
+            var messageDiv = document.getElementById('message');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                var formData = new FormData(form);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'http://139.196.122.57:1236/file/upload', true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        messageDiv.textContent = '文件上传成功';
+                    } else {
+                        messageDiv.textContent = '文件上传失败';
+                    }
+                };
+                xhr.onerror = function() {
+                    messageDiv.textContent = '请求出错';
+                };
+                xhr.send(formData);
+            });
+        });
+    </script>
+</body>
+</html>

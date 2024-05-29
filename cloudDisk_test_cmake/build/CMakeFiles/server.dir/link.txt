@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/server.dir/src/Hash.cc.o CMakeFiles/server.dir/src/main.cc.o -o /home/lu/workFlowProject/cloudDisk_test_cmake/bin/server  -lSimpleAmqpClient -lwfrest -lssl -lcrypt -lcrypto -lalibabacloud-oss-cpp-sdk -lcurl -lpthread -lalibabacloud-sdk-core 
