@@ -1,0 +1,5 @@
+/home/lu/search_engine/build/CMakeFiles/DictProducer.dir
+/home/lu/search_engine/build/CMakeFiles/WebProducer.dir
+/home/lu/search_engine/build/CMakeFiles/server.dir
+/home/lu/search_engine/build/CMakeFiles/edit_cache.dir
+/home/lu/search_engine/build/CMakeFiles/rebuild_cache.dir

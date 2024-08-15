@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/DictProducer.dir/src/Configuration.cc.o CMakeFiles/DictProducer.dir/src/CppJieba.cc.o CMakeFiles/DictProducer.dir/src/DictProducer.cc.o CMakeFiles/DictProducer.dir/src/TestDict.cc.o CMakeFiles/DictProducer.dir/src/Mylogger.cc.o -o /home/lu/search_engine/bin/DictProducer  -llog4cpp -lpthread /home/lu/search_engine/lib/libtinyxml2.a 
